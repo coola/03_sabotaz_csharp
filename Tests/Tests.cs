@@ -52,19 +52,30 @@ namespace Tests
         }
 
         [TestCase]
-        public void TestLexicalAnalisisSomeAnalysisData()
+        public void TestLexicalAnalisisNoAnalysisData()
         {
+            TestCountOfLexems(String.Empty, 0);
+        }
+
+        private void TestCountOfLexems(string stringToParse, int expectedNumerOfLexems)
+        {
+
             var lexicalAnalisis = new LexicalAnalysis();
 
             Assert.NotNull(lexicalAnalisis);
 
-            var input = String.Empty;
-
-            List<Lexem> lexems = lexicalAnalisis.Analize(input);
+            List<Lexem> lexems = lexicalAnalisis.Analize(stringToParse);
 
             Assert.NotNull(lexems);
 
-            Assert.AreEqual(0, lexems.Count);
+            Assert.AreEqual(expectedNumerOfLexems, lexems.Count);
+
+        }
+
+        [TestCase]
+        public void TestLexicalAnalisisSomeAnalysisData()
+        {
+            TestCountOfLexems("int", 1);
         }
 
     

@@ -9,7 +9,22 @@ namespace Parse
     {
         public List<Lexem> Analize(string input)
         {
-            return new List<Lexem>();
+            var lexems = new List<Lexem>();
+
+            if (!String.IsNullOrEmpty(input))
+            {
+                string[] splittedByWhitespaces = input.Split(null);
+
+                foreach (var lexem in splittedByWhitespaces)
+                {
+                   lexems.Add(new Lexem());
+                }
+
+               
+            }
+
+            return lexems;
+
         }
     }
 }
