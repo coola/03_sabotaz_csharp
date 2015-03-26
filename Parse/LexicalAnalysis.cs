@@ -20,7 +20,9 @@ namespace Parse
                 {
                     Lexem item;
 
-                    if (lexem == "int" || lexem == "string" || lexem == "=")
+                    if (lexem == "int" || lexem == "string" || lexem == "=" || lexem == "cast" || lexem == "print"
+                        || lexem == "(" || lexem == ")" || lexem == "\"" || lexem == "+" || lexem == "-"
+                        || lexem == "/" || lexem == "*")
                     {
                         item = new Lexem { Name = lexem };
                     }

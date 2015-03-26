@@ -8,6 +8,23 @@ namespace Tests
     [TestFixture]
     public class Tests
     {
+        private Parser Parser { get; set; }
+        private LexicalAnalysis LexicalAnalysis { get; set; }
+
+        [SetUp]
+        public void Start()
+        {
+            Parser = new Parser();
+            LexicalAnalysis = new LexicalAnalysis();
+        }
+
+        [TearDown]
+        public void Stop()
+        {
+            Parser = null;
+            LexicalAnalysis = null;
+        }
+
         [TestCase]
         public void InitialTest()
         {
@@ -173,5 +190,42 @@ namespace Tests
             Assert.AreEqual("variable", linesOfLexems[1][1].Name);
 
         }
+
+        [TestCase]
+        public void TestReservedWordPrintAndCast()
+        {
+            var lexicalAnalysis = new LexicalAnalysis();
+            Assert.AreEqual("print", lexicalAnalysis.AnalizeLine("print")[0].Name);
+            Assert.AreEqual("cast", lexicalAnalysis.AnalizeLine("cast")[0].Name);
+        }
+
+        [TestCase]
+        public void TestBracketLexems()
+        {
+            Assert.AreEqual("(", LexicalAnalysis.AnalizeLine("(")[0].Name);
+            Assert.AreEqual(")", LexicalAnalysis.AnalizeLine(")")[0].Name);
+        }
+
+        [TestCase]
+        public void TestAllOtherLexems()
+        {
+            TestLexemInLine("\"");
+            TestLexemInLine("+");
+            TestLexemInLine("-");
+            TestLexemInLine("*");
+            TestLexemInLine("/");
+        }
+
+        private void TestLexemInLine(string lexem)
+        {
+            Assert.AreEqual(lexem, LexicalAnalysis.AnalizeLine(lexem)[0].Name);
+        }
+
+        [TestCase]
+        public void TestDifferenceBetweenVariableAndNumber()
+        {
+
+        }
+
     }
 }
