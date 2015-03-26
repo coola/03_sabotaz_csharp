@@ -135,7 +135,7 @@ namespace Tests
         [TestCase]
         public void TestDivideIntoLinesOneLine()
         {
-            List<string> lines = new LexicalAnalysis().Analize(";");
+            List<string> lines = new LexicalAnalysis().Analize(";" + Environment.NewLine);
             Assert.AreEqual(1, lines.Count);
         }
 
@@ -151,12 +151,26 @@ namespace Tests
         public void TestAnalysisAltogether()
         {
             var lexicalAnalysis = new LexicalAnalysis();
-            List<string> lines = lexicalAnalysis.Analize("var a = 5;var b = 4;");
+            List<string> lines = lexicalAnalysis.Analize(String.Format("var a = 5;{0}var b = 4;{0}", Environment.NewLine));
 
             List<List<Lexem>> linesOfLexems = lexicalAnalysis.Analize(lines);
 
             Assert.AreEqual(4, linesOfLexems[0].Count);
             Assert.AreEqual(4, linesOfLexems[1].Count);
+
+        }
+
+        [TestCase]
+        public void TestAnalysisAltogetherMoreComplex()
+        {
+            var lexicalAnalysis = new LexicalAnalysis();
+            List<string> lines = lexicalAnalysis.Analize(String.Format("int a = 5;{0}string b = 4;{0}", Environment.NewLine));
+
+            List<List<Lexem>> linesOfLexems = lexicalAnalysis.Analize(lines);
+
+            Assert.AreEqual("int", linesOfLexems[0][0].Name);
+            Assert.AreEqual("string", linesOfLexems[1][0].Name);
+            Assert.AreEqual("variable", linesOfLexems[1][1].Name);
 
         }
     }

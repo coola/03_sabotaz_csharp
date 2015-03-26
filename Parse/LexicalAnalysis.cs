@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 
 namespace Parse
@@ -42,11 +43,11 @@ namespace Parse
 
             if (!String.IsNullOrEmpty(input))
             {
-                var strings = input.Split(';').ToList();
+                var strings = Regex.Split(input, ";" + Environment.NewLine, RegexOptions.CultureInvariant).ToList();
 
                 var last = strings.Last();
 
-                if(last.Length > 0) throw new CompilationException("Commands must end with semicolon. Last command is without semicolon");
+                if(last.Length > 0) throw new CompilationException("Commands must end with semicolon an end line sign. Last command is without semicolon and end line sign.");
 
                 strings.Remove(last);
                 analize = strings;
