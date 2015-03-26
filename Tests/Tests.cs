@@ -44,7 +44,7 @@ namespace Tests
 
             var input = String.Empty;
 
-            List<Lexem> lexems = lexicalAnalisis.Analize(input);
+            List<Lexem> lexems = lexicalAnalisis.AnalizeLine(input);
 
             Assert.NotNull(lexems);
 
@@ -64,7 +64,7 @@ namespace Tests
 
             Assert.NotNull(lexicalAnalisis);
 
-            List<Lexem> lexems = lexicalAnalisis.Analize(stringToParse);
+            List<Lexem> lexems = lexicalAnalisis.AnalizeLine(stringToParse);
 
             Assert.NotNull(lexems);
 
@@ -73,11 +73,91 @@ namespace Tests
         }
 
         [TestCase]
-        public void TestLexicalAnalisisSomeAnalysisData()
+        public void TestLexicalAnalisisCountSomeAnalysisData()
         {
             TestCountOfLexems("int", 1);
         }
 
-    
+        [TestCase]
+        public void TestLexicalAnalisisCountMoreAnalysisData()
+        {
+            TestCountOfLexems("int a = 5;", 4);
+        }
+
+        [TestCase]
+        public void TestLexicalAnalisisCountMoreAnalysisDataWithSpaces()
+        {
+            TestCountOfLexems("int   a = 5;", 4);
+        }
+
+        [TestCase]
+        public void TestLexicalAnalisisCountMoreAnalysisDataWithWhiteSpaces()
+        {
+            TestCountOfLexems("int \n \r\n \t a = 5;", 4);
+        }
+
+        [TestCase]
+        public void TestRecognizationOfIntLexem()
+        {
+            var analize = new LexicalAnalysis().AnalizeLine("int");
+            Assert.AreEqual("int", analize[0].Name);
+        }
+
+        [TestCase]
+        public void TestRecognizationOfStringLexem()
+        {
+            var analize = new LexicalAnalysis().AnalizeLine("string");
+            Assert.AreEqual("string", analize[0].Name);
+        }
+
+        [TestCase]
+        public void TestRecognizationOfStringAndIntLexem()
+        {
+            var analize = new LexicalAnalysis().AnalizeLine("string int");
+            Assert.AreEqual("string", analize[0].Name);
+            Assert.AreEqual("int", analize[1].Name);
+        }
+
+        [TestCase]
+        public void TestRecognizationOfVariableLexem()
+        {
+            var analize = new LexicalAnalysis().AnalizeLine("string a");
+            Assert.AreEqual("variable", analize[1].Name);
+        }
+
+        [TestCase]
+        public void TestDivideIntoLinesNoLines()
+        {
+            List<string> lines = new LexicalAnalysis().Analize("");
+            Assert.AreEqual(0,lines.Count);
+        }
+
+        [TestCase]
+        public void TestDivideIntoLinesOneLine()
+        {
+            List<string> lines = new LexicalAnalysis().Analize(";");
+            Assert.AreEqual(1, lines.Count);
+        }
+
+        [TestCase]
+        [ExpectedException(typeof(CompilationException))]
+        public void TestDivideIntoLinesLastLineWithoutSemicolon()
+        {
+            List<string> lines = new LexicalAnalysis().Analize("var a = 5;aa");
+            Assert.AreEqual(1, lines.Count);
+        }
+
+        [TestCase]
+        public void TestAnalysisAltogether()
+        {
+            var lexicalAnalysis = new LexicalAnalysis();
+            List<string> lines = lexicalAnalysis.Analize("var a = 5;var b = 4;");
+
+            List<List<Lexem>> linesOfLexems = lexicalAnalysis.Analize(lines);
+
+            Assert.AreEqual(4, linesOfLexems[0].Count);
+            Assert.AreEqual(4, linesOfLexems[1].Count);
+
+        }
     }
 }
