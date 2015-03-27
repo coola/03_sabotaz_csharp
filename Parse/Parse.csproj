@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AllowedType.cs" />
+    <Compile Include="CompilationException.cs" />
     <Compile Include="HeapElement.cs" />
     <Compile Include="Lexem.cs" />
     <Compile Include="LexicalAnalysis.cs" />

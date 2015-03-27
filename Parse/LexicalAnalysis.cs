@@ -16,30 +16,38 @@ namespace Parse
             {
                 string[] splittedByWhitespaces = input.Split(new char[0], StringSplitOptions.RemoveEmptyEntries);
 
-                foreach (var lexem in splittedByWhitespaces)
+                if (splittedByWhitespaces.Count() == 1 && splittedByWhitespaces[0].Contains("="))
                 {
-                    Lexem item;
+                    var splittedByEqualityOperator = splittedByWhitespaces[0].Split('=');
+                    lexems.AddRange(AnalizeLine(String.Format("{0} = {1}", splittedByEqualityOperator[0], splittedByEqualityOperator[1])));
+                }
+                else
+                {
+                    foreach (var lexem in splittedByWhitespaces)
+                    {
+                        Lexem item;
 
-                    if (lexem == "int" || lexem == "string" || lexem == "=" || lexem == "cast" || lexem == "print"
-                        || lexem == "(" || lexem == ")" || lexem == "\"" || lexem == "+" || lexem == "-"
-                        || lexem == "/" || lexem == "*")
-                    {
-                        item = new Lexem { Name = lexem };
-                    }
-                    else
-                    {
-                        if (Regex.IsMatch(lexem, "[a-zA-Z_][a-zA-Z0-9_]*", RegexOptions.CultureInvariant))
+                        if (lexem == "int" || lexem == "string" || lexem == "=" || lexem == "cast" || lexem == "print"
+                            || lexem == "(" || lexem == ")" || lexem == "\"" || lexem == "+" || lexem == "-"
+                            || lexem == "/" || lexem == "*")
                         {
-                            item = new Lexem {Name = "variable", Value = lexem};
+                            item = new Lexem {Name = lexem};
                         }
                         else
                         {
-                            item = new Lexem { Name = "number", Value = Int32.Parse(lexem)};
-                        }
-                       
-                    }
+                            if (Regex.IsMatch(lexem, "[a-zA-Z_][a-zA-Z0-9_]*", RegexOptions.CultureInvariant))
+                            {
+                                item = new Lexem {Name = "variable", Value = lexem};
+                            }
+                            else
+                            {
+                                item = new Lexem {Name = "number", Value = Int32.Parse(lexem)};
+                            }
 
-                    lexems.Add(item);
+                        }
+
+                        lexems.Add(item);
+                    }
                 }
             }
 
@@ -82,14 +90,6 @@ namespace Parse
             }
 
             return result;
-        }
-    }
-
-    public class CompilationException : Exception
-    {
-        public CompilationException(string message) : base(message)
-        {
-          
         }
     }
 }

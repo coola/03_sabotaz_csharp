@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.PerformanceData;
 using NUnit.Framework;
 using Parse;
 
@@ -138,6 +139,14 @@ namespace Tests
         {
             var analize = LexicalAnalysis.AnalizeLine("string a");
             Assert.AreEqual("variable", analize[1].Name);
+
+        }
+
+        [TestCase]
+        public void TestLexicalSimpleVariableDefinition()
+        {
+            var analize = LexicalAnalysis.AnalizeLine("a=5");
+            Assert.AreEqual(3, analize.Count);
         }
 
         [TestCase]
@@ -174,6 +183,8 @@ namespace Tests
             Assert.AreEqual(4, linesOfLexems[1].Count);
 
         }
+
+        
 
         [TestCase]
         public void TestAnalysisAltogetherMoreComplex()
@@ -265,7 +276,7 @@ namespace Tests
         }
 
         [TestCase]
-        public void TesDeclaringSimpleStringVariable()
+        public void TestDeclaringSimpleStringVariable()
         {
             Parser.Parse(String.Format("string napis;{0}", Environment.NewLine));
             Assert.AreEqual("napis", Parser.Heap[0].Name);
@@ -274,17 +285,30 @@ namespace Tests
         }
 
         [TestCase]
-        public void TesDeclaringSimpleStringAndIntVariable()
+        public void TestDeclaringSimpleStringAndIntVariable()
         {
             Parser.Parse(String.Format("int d;{0}string napis;{0}", Environment.NewLine));
 
             Assert.AreEqual("d", Parser.Heap[0].Name);
             Assert.AreEqual(AllowedType.Int, Parser.Heap[0].Type);
             Assert.AreEqual(0, Parser.Heap[0].Value);
-            
-            Assert.AreEqual("napis", Parser.Heap[1].Name);
-            Assert.AreEqual(AllowedType.String, Parser.Heap[1].Type);
-            Assert.AreEqual(String.Empty, Parser.Heap[1].Value);
+
+            CheckVariable(1, "napis", AllowedType.String, String.Empty);
+        }
+
+        private void CheckVariable(int index, string name, AllowedType type, object value)
+        {
+            Assert.AreEqual(name, Parser.Heap[index].Name);
+            Assert.AreEqual(type, Parser.Heap[index].Type);
+            Assert.AreEqual(value, Parser.Heap[index].Value);
+        }
+
+        [TestCase]
+        public void TestDefinitionWithNumberOfOnceDeclaredIntVariable()
+        {
+            Parser.Parse(String.Format("int d;{0}d=5;{0}", Environment.NewLine));
+            CheckVariable(0, "d", AllowedType.Int, 5);
+       
         }
 
     }
