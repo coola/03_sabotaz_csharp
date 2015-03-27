@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.PerformanceData;
 using NUnit.Framework;
 using Parse;
 
@@ -174,7 +173,6 @@ namespace Tests
         [TestCase]
         public void TestAnalysisAltogether()
         {
-            var lexicalAnalysis = new LexicalAnalysis();
             List<string> lines = LexicalAnalysis.Analize(String.Format("var a = 5;{0}var b = 4;{0}", Environment.NewLine));
 
             List<List<Lexem>> linesOfLexems = LexicalAnalysis.Analize(lines);
@@ -189,7 +187,6 @@ namespace Tests
         [TestCase]
         public void TestAnalysisAltogetherMoreComplex()
         {
-            var lexicalAnalysis = new LexicalAnalysis();
             List<string> lines = LexicalAnalysis.Analize(String.Format("int a = 5;{0}string b = 4;{0}", Environment.NewLine));
 
             List<List<Lexem>> linesOfLexems = LexicalAnalysis.Analize(lines);
@@ -203,7 +200,6 @@ namespace Tests
         [TestCase]
         public void TestReservedWordPrintAndCast()
         {
-            var lexicalAnalysis = new LexicalAnalysis();
             Assert.AreEqual("print", LexicalAnalysis.AnalizeLine("print")[0].Name);
             Assert.AreEqual("cast", LexicalAnalysis.AnalizeLine("cast")[0].Name);
         }
@@ -308,8 +304,29 @@ namespace Tests
         {
             Parser.Parse(String.Format("int d;{0}d=5;{0}", Environment.NewLine));
             CheckVariable(0, "d", AllowedType.Int, 5);
-       
         }
+
+        [TestCase]
+        public void TestTwoChangesOfInt()
+        {
+            Parser.Parse(String.Format("int d;{0}d=5;{0}d=254;{0}", Environment.NewLine));
+            CheckVariable(0, "d", AllowedType.Int, 254);
+        }
+
+        [TestCase]
+        public void TestTwoChangesOfIntWithWhiteSpaces()
+        {
+            Parser.Parse(String.Format("int d;{0}d= 5;{0}d =254;{0}", Environment.NewLine));
+            CheckVariable(0, "d", AllowedType.Int, 254);
+        }
+
+        [TestCase]
+        public void TestChangeOfTheString()
+        {
+            
+        }
+
+
 
     }
 }

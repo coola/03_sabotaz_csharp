@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-
 namespace Parse
 {
     public class LexicalAnalysis
@@ -15,20 +14,22 @@ namespace Parse
             if (!String.IsNullOrEmpty(input))
             {
                 string[] splittedByWhitespaces = input.Split(new char[0], StringSplitOptions.RemoveEmptyEntries);
-
-                if (splittedByWhitespaces.Count() == 1 && splittedByWhitespaces[0].Contains("="))
+                
+                foreach (var lexem in splittedByWhitespaces)
                 {
-                    var splittedByEqualityOperator = splittedByWhitespaces[0].Split('=');
-                    lexems.AddRange(AnalizeLine(String.Format("{0} = {1}", splittedByEqualityOperator[0], splittedByEqualityOperator[1])));
-                }
-                else
-                {
-                    foreach (var lexem in splittedByWhitespaces)
+                    if (lexem.Length > 1 && lexem.Contains("="))
+                    {
+                        var splittedByEqualityOperator = lexem.Split('=');
+                        lexems.AddRange(
+                            AnalizeLine(String.Format("{0} = {1}", splittedByEqualityOperator[0],
+                                splittedByEqualityOperator[1])));
+                    }
+                    else
                     {
                         Lexem item;
 
-                        if (lexem == "int" || lexem == "string" || lexem == "=" || lexem == "cast" || lexem == "print"
-                            || lexem == "(" || lexem == ")" || lexem == "\"" || lexem == "+" || lexem == "-"
+                        if (lexem == "int" || lexem == "string" || lexem == "=" || lexem == "cast" ||
+                            lexem == "print" || lexem == "(" || lexem == ")" || lexem == "\"" || lexem == "+" || lexem == "-"
                             || lexem == "/" || lexem == "*")
                         {
                             item = new Lexem {Name = lexem};
@@ -43,7 +44,6 @@ namespace Parse
                             {
                                 item = new Lexem {Name = "number", Value = Int32.Parse(lexem)};
                             }
-
                         }
 
                         lexems.Add(item);
@@ -51,8 +51,8 @@ namespace Parse
                 }
             }
 
-            return lexems;
 
+            return lexems;
         }
 
         public static List<string> Analize(string input)
@@ -65,7 +65,9 @@ namespace Parse
 
                 var last = strings.Last();
 
-                if(last.Length > 0) throw new CompilationException("Commands must end with semicolon an end line sign. Last command is without semicolon and end line sign.");
+                if (last.Length > 0)
+                    throw new CompilationException(
+                        "Commands must end with semicolon an end line sign. Last command is without semicolon and end line sign.");
 
                 strings.Remove(last);
                 analize = strings;
@@ -76,12 +78,10 @@ namespace Parse
             }
 
             return analize;
-           
         }
 
         public static List<List<Lexem>> Analize(List<string> lines)
         {
-
             var result = new List<List<Lexem>>();
 
             foreach (var line in lines)
