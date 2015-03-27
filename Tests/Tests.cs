@@ -323,7 +323,8 @@ namespace Tests
         [TestCase]
         public void TestChangeOfTheString()
         {
-            
+            Parser.Parse(String.Format("string napis;{0}napis = \"Jakis napis\";{0}", Environment.NewLine));
+            CheckVariable(0, "napis", AllowedType.String, "Jakis napis");
         }
 
 
