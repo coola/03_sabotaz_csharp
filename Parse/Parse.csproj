@@ -40,6 +40,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AllowedType.cs" />
+    <Compile Include="HeapElement.cs" />
     <Compile Include="Lexem.cs" />
     <Compile Include="LexicalAnalysis.cs" />
     <Compile Include="Parser.cs" />

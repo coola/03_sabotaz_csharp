@@ -8,7 +8,7 @@ namespace Parse
 {
     public class LexicalAnalysis
     {
-        public List<Lexem> AnalizeLine(string input)
+        public static List<Lexem> AnalizeLine(string input)
         {
             var lexems = new List<Lexem>();
 
@@ -28,7 +28,15 @@ namespace Parse
                     }
                     else
                     {
-                        item = new Lexem { Name = "variable" };
+                        if (Regex.IsMatch(lexem, "[a-zA-Z_][a-zA-Z0-9_]*", RegexOptions.CultureInvariant))
+                        {
+                            item = new Lexem {Name = "variable", Value = lexem};
+                        }
+                        else
+                        {
+                            item = new Lexem { Name = "number", Value = Int32.Parse(lexem)};
+                        }
+                       
                     }
 
                     lexems.Add(item);
@@ -39,7 +47,7 @@ namespace Parse
 
         }
 
-        public List<string> Analize(string input)
+        public static List<string> Analize(string input)
         {
             List<string> analize;
 
@@ -63,7 +71,7 @@ namespace Parse
            
         }
 
-        public List<List<Lexem>> Analize(List<string> lines)
+        public static List<List<Lexem>> Analize(List<string> lines)
         {
 
             var result = new List<List<Lexem>>();

@@ -45,10 +45,8 @@ namespace Tests
         [TestCase]
         public void TestEmptyOutputWhenThere()
         {
-            var parser = new Parser();
-
             var input = String.Empty;
-            string result = parser.Parse(input);
+            string result = Parser.Parse(input);
             Assert.AreEqual(string.Empty, result);
         }
 
@@ -61,7 +59,7 @@ namespace Tests
 
             var input = String.Empty;
 
-            List<Lexem> lexems = lexicalAnalisis.AnalizeLine(input);
+            List<Lexem> lexems = LexicalAnalysis.AnalizeLine(input);
 
             Assert.NotNull(lexems);
 
@@ -81,7 +79,7 @@ namespace Tests
 
             Assert.NotNull(lexicalAnalisis);
 
-            List<Lexem> lexems = lexicalAnalisis.AnalizeLine(stringToParse);
+            List<Lexem> lexems = LexicalAnalysis.AnalizeLine(stringToParse);
 
             Assert.NotNull(lexems);
 
@@ -98,39 +96,39 @@ namespace Tests
         [TestCase]
         public void TestLexicalAnalisisCountMoreAnalysisData()
         {
-            TestCountOfLexems("int a = 5;", 4);
+            TestCountOfLexems("int a = 5", 4);
         }
 
         [TestCase]
         public void TestLexicalAnalisisCountMoreAnalysisDataWithSpaces()
         {
-            TestCountOfLexems("int   a = 5;", 4);
+            TestCountOfLexems("int   a = 5", 4);
         }
 
         [TestCase]
         public void TestLexicalAnalisisCountMoreAnalysisDataWithWhiteSpaces()
         {
-            TestCountOfLexems("int \n \r\n \t a = 5;", 4);
+            TestCountOfLexems("int \n \r\n \t a = 5", 4);
         }
 
         [TestCase]
         public void TestRecognizationOfIntLexem()
         {
-            var analize = new LexicalAnalysis().AnalizeLine("int");
+            var analize = LexicalAnalysis.AnalizeLine("int");
             Assert.AreEqual("int", analize[0].Name);
         }
 
         [TestCase]
         public void TestRecognizationOfStringLexem()
         {
-            var analize = new LexicalAnalysis().AnalizeLine("string");
+            var analize = LexicalAnalysis.AnalizeLine("string");
             Assert.AreEqual("string", analize[0].Name);
         }
 
         [TestCase]
         public void TestRecognizationOfStringAndIntLexem()
         {
-            var analize = new LexicalAnalysis().AnalizeLine("string int");
+            var analize = LexicalAnalysis.AnalizeLine("string int");
             Assert.AreEqual("string", analize[0].Name);
             Assert.AreEqual("int", analize[1].Name);
         }
@@ -138,21 +136,21 @@ namespace Tests
         [TestCase]
         public void TestRecognizationOfVariableLexem()
         {
-            var analize = new LexicalAnalysis().AnalizeLine("string a");
+            var analize = LexicalAnalysis.AnalizeLine("string a");
             Assert.AreEqual("variable", analize[1].Name);
         }
 
         [TestCase]
         public void TestDivideIntoLinesNoLines()
         {
-            List<string> lines = new LexicalAnalysis().Analize("");
+            List<string> lines = LexicalAnalysis.Analize("");
             Assert.AreEqual(0,lines.Count);
         }
 
         [TestCase]
         public void TestDivideIntoLinesOneLine()
         {
-            List<string> lines = new LexicalAnalysis().Analize(";" + Environment.NewLine);
+            List<string> lines = LexicalAnalysis.Analize(";" + Environment.NewLine);
             Assert.AreEqual(1, lines.Count);
         }
 
@@ -160,7 +158,7 @@ namespace Tests
         [ExpectedException(typeof(CompilationException))]
         public void TestDivideIntoLinesLastLineWithoutSemicolon()
         {
-            List<string> lines = new LexicalAnalysis().Analize("var a = 5;aa");
+            List<string> lines = LexicalAnalysis.Analize("var a = 5;aa");
             Assert.AreEqual(1, lines.Count);
         }
 
@@ -168,9 +166,9 @@ namespace Tests
         public void TestAnalysisAltogether()
         {
             var lexicalAnalysis = new LexicalAnalysis();
-            List<string> lines = lexicalAnalysis.Analize(String.Format("var a = 5;{0}var b = 4;{0}", Environment.NewLine));
+            List<string> lines = LexicalAnalysis.Analize(String.Format("var a = 5;{0}var b = 4;{0}", Environment.NewLine));
 
-            List<List<Lexem>> linesOfLexems = lexicalAnalysis.Analize(lines);
+            List<List<Lexem>> linesOfLexems = LexicalAnalysis.Analize(lines);
 
             Assert.AreEqual(4, linesOfLexems[0].Count);
             Assert.AreEqual(4, linesOfLexems[1].Count);
@@ -181,9 +179,9 @@ namespace Tests
         public void TestAnalysisAltogetherMoreComplex()
         {
             var lexicalAnalysis = new LexicalAnalysis();
-            List<string> lines = lexicalAnalysis.Analize(String.Format("int a = 5;{0}string b = 4;{0}", Environment.NewLine));
+            List<string> lines = LexicalAnalysis.Analize(String.Format("int a = 5;{0}string b = 4;{0}", Environment.NewLine));
 
-            List<List<Lexem>> linesOfLexems = lexicalAnalysis.Analize(lines);
+            List<List<Lexem>> linesOfLexems = LexicalAnalysis.Analize(lines);
 
             Assert.AreEqual("int", linesOfLexems[0][0].Name);
             Assert.AreEqual("string", linesOfLexems[1][0].Name);
@@ -195,8 +193,8 @@ namespace Tests
         public void TestReservedWordPrintAndCast()
         {
             var lexicalAnalysis = new LexicalAnalysis();
-            Assert.AreEqual("print", lexicalAnalysis.AnalizeLine("print")[0].Name);
-            Assert.AreEqual("cast", lexicalAnalysis.AnalizeLine("cast")[0].Name);
+            Assert.AreEqual("print", LexicalAnalysis.AnalizeLine("print")[0].Name);
+            Assert.AreEqual("cast", LexicalAnalysis.AnalizeLine("cast")[0].Name);
         }
 
         [TestCase]
@@ -224,7 +222,69 @@ namespace Tests
         [TestCase]
         public void TestDifferenceBetweenVariableAndNumber()
         {
+            Assert.AreEqual("variable", LexicalAnalysis.AnalizeLine("int assda = 54545")[1].Name);
+            Assert.AreEqual("number", LexicalAnalysis.AnalizeLine("int assda = 54545")[3].Name);
+        }
 
+        [TestCase]
+        public void TestValueOfTheNumber()
+        {
+            Assert.AreEqual(54545, LexicalAnalysis.AnalizeLine("int assda = 54545")[3].Value);
+        }
+
+        [TestCase]
+        public void TestTranslationIntoObjects()
+        {
+           Parser.Parse(String.Format("int d;{0}", Environment.NewLine));
+           Assert.AreEqual(1, Parser.Heap.Count);
+        }
+
+        [TestCase]
+        public void TestNoObjectsOnHeap()
+        {
+            Parser.Parse(String.Format("d=a;{0}", Environment.NewLine));
+            Assert.AreEqual(0, Parser.Heap.Count);
+        }
+
+        [TestCase]
+        public void TestDeclaringSimpleIntVariable()
+        {
+            Parser.Parse(String.Format("int d;{0}", Environment.NewLine));
+            Assert.AreEqual("d", Parser.Heap[0].Name);
+            Assert.AreEqual(AllowedType.Int, Parser.Heap[0].Type);
+            Assert.AreEqual(0, Parser.Heap[0].Value);
+        }
+
+        [TestCase]
+        public void TestDeclaringTwoIntVariables()
+        {
+            Parser.Parse(String.Format("int d;{0}int g;{0}", Environment.NewLine));
+            Assert.AreEqual("g", Parser.Heap[1].Name);
+            Assert.AreEqual(AllowedType.Int, Parser.Heap[1].Type);
+            Assert.AreEqual(0, Parser.Heap[1].Value);
+        }
+
+        [TestCase]
+        public void TesDeclaringSimpleStringVariable()
+        {
+            Parser.Parse(String.Format("string napis;{0}", Environment.NewLine));
+            Assert.AreEqual("napis", Parser.Heap[0].Name);
+            Assert.AreEqual(AllowedType.String, Parser.Heap[0].Type);
+            Assert.AreEqual(String.Empty, Parser.Heap[0].Value);
+        }
+
+        [TestCase]
+        public void TesDeclaringSimpleStringAndIntVariable()
+        {
+            Parser.Parse(String.Format("int d;{0}string napis;{0}", Environment.NewLine));
+
+            Assert.AreEqual("d", Parser.Heap[0].Name);
+            Assert.AreEqual(AllowedType.Int, Parser.Heap[0].Type);
+            Assert.AreEqual(0, Parser.Heap[0].Value);
+            
+            Assert.AreEqual("napis", Parser.Heap[1].Name);
+            Assert.AreEqual(AllowedType.String, Parser.Heap[1].Type);
+            Assert.AreEqual(String.Empty, Parser.Heap[1].Value);
         }
 
     }
