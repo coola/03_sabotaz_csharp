@@ -329,10 +329,16 @@ namespace Tests
         }
 
         [TestCase]
-        [Ignore]
+        [ExpectedException(typeof(CompilationException))]
         public void TestChangeOfTheString()
         {
             Parser.Parse(String.Format("napis = \"Jakis napis\";{0}", Environment.NewLine));
+        }
+
+        [TestCase]
+        public void TestOfTheString()
+        {
+            Parser.Parse(String.Format("string napis;{0}napis = \"Jakis napis\";{0}", Environment.NewLine));
             CheckVariable(0, "napis", AllowedType.String, "Jakis napis");
         }
 
