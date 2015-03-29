@@ -36,7 +36,7 @@ namespace Tests
         public void TestEmptyInputEmptyOutput()
         {
             var parser = new Parser();
-            
+
             var input = String.Empty;
             string result = parser.Parse(input);
             Assert.AreEqual(string.Empty, result);
@@ -74,7 +74,6 @@ namespace Tests
 
         private void TestCountOfLexems(string stringToParse, int expectedNumerOfLexems)
         {
-
             var lexicalAnalisis = new LexicalAnalysis();
 
             Assert.NotNull(lexicalAnalisis);
@@ -84,7 +83,6 @@ namespace Tests
             Assert.NotNull(lexems);
 
             Assert.AreEqual(expectedNumerOfLexems, lexems.Count);
-
         }
 
         [TestCase]
@@ -138,7 +136,6 @@ namespace Tests
         {
             var analize = LexicalAnalysis.AnalizeLine("string a");
             Assert.AreEqual("variable", analize[1].Name);
-
         }
 
         [TestCase]
@@ -150,7 +147,8 @@ namespace Tests
             Assert.AreEqual("\"", analize[2].Name);
             Assert.AreEqual("stringValue", analize[3].Name);
             Assert.AreEqual("Some text", analize[3].Value);
-
+            Assert.AreEqual("\"", analize[4].Name);
+            Assert.AreEqual(5, analize.Count);
         }
 
         [TestCase]
@@ -164,7 +162,7 @@ namespace Tests
         public void TestDivideIntoLinesNoLines()
         {
             List<string> lines = LexicalAnalysis.Analize("");
-            Assert.AreEqual(0,lines.Count);
+            Assert.AreEqual(0, lines.Count);
         }
 
         [TestCase]
@@ -175,7 +173,7 @@ namespace Tests
         }
 
         [TestCase]
-        [ExpectedException(typeof(CompilationException))]
+        [ExpectedException(typeof (CompilationException))]
         public void TestDivideIntoLinesLastLineWithoutSemicolon()
         {
             List<string> lines = LexicalAnalysis.Analize("var a = 5;aa");
@@ -185,28 +183,27 @@ namespace Tests
         [TestCase]
         public void TestAnalysisAltogether()
         {
-            List<string> lines = LexicalAnalysis.Analize(String.Format("var a = 5;{0}var b = 4;{0}", Environment.NewLine));
+            List<string> lines =
+                LexicalAnalysis.Analize(String.Format("var a = 5;{0}var b = 4;{0}", Environment.NewLine));
 
             List<List<Lexem>> linesOfLexems = LexicalAnalysis.Analize(lines);
 
             Assert.AreEqual(4, linesOfLexems[0].Count);
             Assert.AreEqual(4, linesOfLexems[1].Count);
-
         }
 
-        
 
         [TestCase]
         public void TestAnalysisAltogetherMoreComplex()
         {
-            List<string> lines = LexicalAnalysis.Analize(String.Format("int a = 5;{0}string b = 4;{0}", Environment.NewLine));
+            List<string> lines =
+                LexicalAnalysis.Analize(String.Format("int a = 5;{0}string b = 4;{0}", Environment.NewLine));
 
             List<List<Lexem>> linesOfLexems = LexicalAnalysis.Analize(lines);
 
             Assert.AreEqual("int", linesOfLexems[0][0].Name);
             Assert.AreEqual("string", linesOfLexems[1][0].Name);
             Assert.AreEqual("variable", linesOfLexems[1][1].Name);
-
         }
 
         [TestCase]
@@ -226,8 +223,7 @@ namespace Tests
         [TestCase]
         public void TestAllOtherLexems()
         {
-            TestLexemInLine("\"");
-            TestLexemInLine("+");
+       TestLexemInLine("+");
             TestLexemInLine("-");
             TestLexemInLine("*");
             TestLexemInLine("/");
@@ -254,8 +250,8 @@ namespace Tests
         [TestCase]
         public void TestTranslationIntoObjects()
         {
-           Parser.Parse(String.Format("int d;{0}", Environment.NewLine));
-           Assert.AreEqual(1, Parser.Heap.Count);
+            Parser.Parse(String.Format("int d;{0}", Environment.NewLine));
+            Assert.AreEqual(1, Parser.Heap.Count);
         }
 
         [TestCase]
@@ -332,14 +328,13 @@ namespace Tests
             CheckVariable(0, "d", AllowedType.Int, 254);
         }
 
-       [TestCase]
-       [Ignore]
-       public void TestChangeOfTheString()
+        [TestCase]
+        [Ignore]
+        public void TestChangeOfTheString()
         {
             Parser.Parse(String.Format("napis = \"Jakis napis\";{0}", Environment.NewLine));
             CheckVariable(0, "napis", AllowedType.String, "Jakis napis");
         }
-
 
 
     }

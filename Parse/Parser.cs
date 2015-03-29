@@ -1,12 +1,11 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace Parse
 {
     public class Parser
     {
-        public List<HeapElement> Heap{ get; set; }
+        public List<HeapElement> Heap { get; set; }
 
         public Parser()
         {
@@ -49,7 +48,8 @@ namespace Parse
                     if (lineOfLexems[0].Name == "variable" && lineOfLexems[1].Name == "=" &&
                         lineOfLexems[2].Name == "number")
                     {
-                        Predicate<HeapElement> currentElement = element => element.Name == lineOfLexems[0].Value.ToString();
+                        Predicate<HeapElement> currentElement =
+                            element => element.Name == lineOfLexems[0].Value.ToString();
 
                         if (Heap.Exists(currentElement))
                         {

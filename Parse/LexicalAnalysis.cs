@@ -31,7 +31,7 @@ namespace Parse
 
                 if (input.Contains("\""))
                 {
-                    string[] splittedByQuotationMark = input.Split('"');
+                    string[] splittedByQuotationMark = input.Split(new [] { '"' }, StringSplitOptions.RemoveEmptyEntries);
 
                     for (int i = 0; i < splittedByQuotationMark.Length; i++)
                     {
@@ -44,7 +44,7 @@ namespace Parse
                             lexems.Add(new Lexem {Name = "stringValue", Value = splittedByQuotationMark[i]});
                         }
 
-                        if (splittedByQuotationMark.Length != i)
+                        if (splittedByQuotationMark.Length != i - 1)
                         {
                             lexems.Add(new Lexem { Name = "\"" });
                         }
@@ -72,7 +72,7 @@ namespace Parse
                             Lexem item;
 
                             if (lexem == "int" || lexem == "string" || lexem == "=" || lexem == "cast" ||
-                                lexem == "print" || lexem == "(" || lexem == ")" || lexem == "\"" || lexem == "+" ||
+                                lexem == "print" || lexem == "(" || lexem == ")"  || lexem == "+" ||
                                 lexem == "-"
                                 || lexem == "/" || lexem == "*")
                             {
